@@ -21,7 +21,7 @@
                 </div>
              </div>
              <div class="card-body">
-                <form method="post" action="" accept-charset="utf-8">
+                <form method="post" accept-charset="utf-8">
                     <div class="col-10 form group " style="text-align: center;">
                     <label><b>select the company</b> </label>
                     <select class="selectpicker form-control" name="company" id="company" required="1" onchange="load_car_models(this.id,'model')">
@@ -64,18 +64,25 @@
                         </div>
                         
                         <div class="col-10 form group " style="text-align: center;">
-                            <button class="btn btn-primary form-control" onclick="">
+                            <button class="btn btn-primary form-control" onclick="send_data()">
                                 Predict price </button>
                             </div>
                         
                         
 
                 </form>
+                <br>
+             <div calss="row">
+                <div class="col-12" style="text-align: center;">
+                <h3><span id="prediction"></span></h3></div>
+             </div>
+
 
              </div>   
             </div>
         </div>
     </div>
+
 
     <script>
         function load_car_models(company_id,model_id){
@@ -107,10 +114,36 @@
 
             {% endfor %}
 
+                }
            
-             
+             function form_handler(event){
+                event.preventDefault();
+             }
 
-        }
+            function send_data(){
+                //supress form default behaviour
+                // send and recieve data to / predict
+                document.querySelector('form').addEventListener('submit',form_handler);
+                var fd=new  FormData(document.querySelector('form'))
+
+                var xhr=new XMLHttpRequest({mozSystem: true});
+
+                xhr.open('POST','/predict',true);
+                
+                document.getElementById("prediction").innerHTML="wait ! we are predicting the price.....";
+
+                xhr.onreadystatechange=function() {
+                    if(xhr.readyState==XMLHttpRequest.DONE)
+                    {
+                        document.getElementById("prediction").innerHTML="prediction : ₹"+xhr.responseText;
+                    }
+                };
+                xhr.onload=function(){} ;
+                xhr.send(fd);
+
+                }
+
+        
     </script>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
